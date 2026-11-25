@@ -1,0 +1,55 @@
+version: "3.8"
+
+# x-services-volume:
+#   &admin-repo
+#   type: bind
+#   source: ./uspider-admin
+#   target: /uspider-admin
+
+services:
+  uspider-admin:
+    image: "uspider-admin:latest"
+    volumes:
+      - admin-repo:/uspider-admin
+      # - <<: *admin-repo
+  uspider-nginx:
+    build: .
+    image: "nginx:1.19-alpine"
+    ports:
+      - "4200:80"
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./nginx/:/etc/nginx/
+      - admin-repo:/uspider-admin
+      # - <<: *admin-repo
+    depends_on:
+      - uspider-admin
+volumes:
+  admin-repo:
+    external: true
+
+      # version: "3.8"
+
+# x-services-volume:
+#   &admin-repo
+#   type: bind
+#   source: ./uspider-admin
+#   target: /uspider-admin
+#   external:
+
+# services:
+#   uspider-admin:
+#     image: "uspider-admin:latest"
+#     volumes:
+#       - <<: *admin-repo
+#   uspider-nginx:
+#     build: .
+#     image: "nginx:1.19-alpine"
+#     ports:
+#       - "4200:80"
+#     volumes:
+#       - <<: *admin-repo
+#       - ./nginx/conf.d/:/etc/nginx/conf.d/
+#       - ./nginx/:/etc/nginx/
+#     depends_on:
+#       - uspider-admin
